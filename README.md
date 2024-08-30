@@ -1,3 +1,1 @@
-"# kana_generator" 
-"# kana_generator" 
-"# kana_generator" 
+"Kana generator for the Japanese language" 
