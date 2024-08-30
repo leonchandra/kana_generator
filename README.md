@@ -1,1 +1,1 @@
-"Kana generator for the Japanese language" 
+Kana generator for the Japanese language 
