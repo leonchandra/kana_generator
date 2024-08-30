@@ -1,35 +1,29 @@
 import re
 import random
 import tkinter as tk
-from tkinter import filedialog
 import jaconv
-from PIL import ImageGrab
-from datetime import datetime
-import os
+
 
 
 file_name = "jp.txt"
+
+smol_hiragana = ["ゃゅょ", "ぁぃぅぇぉ"]
+
+all_hiragana = ["んー", "あいうえお", "かきくけこ", "さしすせそ", "たちつってと", 
+                "がぎぐげご", "ざじずぜぞ", "だぢづでど",
+                "なにぬねの", "はひふへほ", "ばびぶべぼ", "ぱぴぷぺぽ",
+                "まみむめも", "らりるれろ", "やゆよ",  "わを"] + smol_hiragana
 
 # hiragana = ["んー", "あいうえお", "かきくけこ", "さしすせそ", "たちつってと", "なにぬねの", "はひふへほ", "まみむめも", 
 #            "らりるれろ", "やゆよ",  "わを"]
 # dakuten_hiragana = ["がぎぐげご", "ざじずぜぞ", "だぢづでど", "ばびぶべぼ"]
 # handakuten_hiragana = ["ぱぴぷぺぽ"]
-smol_hiragana = ["ゃゅょ", "ぁぃぅぇぉ"]
-
 # all_hiragana = hiragana + dakuten_hiragana + handakuten_hiragana + smol_hiragana
-# print(len(all_hiragana))
-# print(all_hiragana)
-all_hiragana = ["んー", "あいうえお", "かきくけこ", "さしすせそ", "たちつってと", 
-                "がぎぐげご", "ざじずぜぞ", "だぢづでど",
-                "なにぬねの", "はひふへほ", "ばびぶべぼ", "ぱぴぷぺぽ",
-                "まみむめも", "らりるれろ", "やゆよ",  "わを"] + smol_hiragana
-# print(all_hiragana)
-# print(len(all_hiragana))
 
-katakana = ["ンー", "アイウエオ", "カキクケコ", "サシスセソ", "タチツッテト", "ナニヌネノ", "ハヒフヘホ", 
-            "マミムメモ", "ヤユヨ", "ラリルレロ", "ワヲ"]
-dakuten_katakana = ["ガギグゲゴ", "ザジズゼゾ", "ダヂヅデド", "バビブベボ"]
-handakuten_katakana = ["パピプペポ"]
+# katakana = ["ンー", "アイウエオ", "カキクケコ", "サシスセソ", "タチツッテト", "ナニヌネノ", "ハヒフヘホ", 
+#             "マミムメモ", "ヤユヨ", "ラリルレロ", "ワヲ"]
+# dakuten_katakana = ["ガギグゲゴ", "ザジズゼゾ", "ダヂヅデド", "バビブベボ"]
+# handakuten_katakana = ["パピプペポ"]
 
 jp_text = open(file_name, encoding='utf-8').read()
 
@@ -52,8 +46,7 @@ for i in range(len(all_hiragana)):
 # Canvas
 class Whiteboard:
     def __init__(self, root, width, height, free_height):
-        self.root = root
-        # self.root.title("Tkinter Whiteboard")
+        self.root = root\
 
         # Create the Canvas
         self.canvas = tk.Canvas(self.root, bg="white", width=width, height=height, borderwidth=1, relief="solid")
@@ -74,15 +67,6 @@ class Whiteboard:
         self.root.bind_all('<Control-z>', self.undo)
         self.root.bind_all('<Control-y>', self.redo)
         self.root.bind_all('<Control-n>', self.clear_and_save)
-
-        # Create color palette
-        self.create_color_palette()
-
-    def create_color_palette(self):
-        colors = ['black', 'red', 'green', 'blue', 'yellow', 'orange', 'purple', 'brown', 'gray']
-        for color in colors:
-            color_button = tk.Button(self.root, bg=color, command=lambda c=color: self.change_color(c), width=2)
-            #color_button.pack(side=tk.LEFT)
 
     def change_color(self, new_color):
         self.pen_color = new_color
@@ -115,34 +99,11 @@ class Whiteboard:
             self.redraw_canvas()
 
     def clear_and_save(self, event=None):
-        # Save the current canvas to an image
-        # self.save_canvas_as_image("whiteboard_image.png")
-        # self.save_canvas_as_image("whiteboard_image.png")
-
-        # # List all files in the directory
-        # directory = filedialog.askdirectory()
-        # files = os.listdir(directory)
-
-        # # Extract files with the current date prefix and find the highest number
-        # current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        # prefix = current_time
-        # numbers = [int(f.split('_')[-1].split('.')[0]) for f in files if f.startswith(prefix) and f.split('_')[-1].split('.')[0].isdigit()]
-        # latest_number = max(numbers) if numbers else 0
-
         # Clear the canvas
         self.canvas.delete("all")
         # Clear undo/redo stacks
         self.actions.clear()
         self.redo_stack.clear()
-
-    def save_canvas_as_image(self, filename):
-        # Save the current canvas as an image using PIL
-        self.canvas.update()
-        x = self.root.winfo_rootx() + self.canvas.winfo_x()
-        y = self.root.winfo_rooty() + self.canvas.winfo_y()
-        width = self.canvas.winfo_width()
-        height = self.canvas.winfo_height()
-        ImageGrab.grab(bbox=(x, y, x + width, y + height)).save(filename)
 
     def redraw_canvas(self):
         self.canvas.delete("all")
@@ -151,19 +112,17 @@ class Whiteboard:
                 _, x1, y1, x2, y2, color = action
                 self.canvas.create_line(x1, y1, x2, y2, width=3, fill=color, capstyle=tk.ROUND, smooth=tk.TRUE)
 
+
+
 # GUI
 def close_window(event=None):
     root.destroy()
 
 def toggle_canvas(window, width, height, wb_width, wb_height):
-    # if (window.winfo_width() != width & window.winfo_height() != height):
-
     if (window.canvas == "T"):
-        # window.geometry(f"{width}x{height}")
         center_window(window, width, height)
         window.canvas = "F"
     else:
-        # window.geometry(f"{width+wb_width}x{wb_height}")
         center_window(window, width+wb_width, wb_height)
         window.canvas = "T"
 
@@ -195,8 +154,6 @@ def generate_words(a = ""):
         selected_words = list(set(selected_words))
 
     global ans_type
-    # ans_type = type + ans_type
-    # print(ans_type)
     ans = get_answer(selected_words, type + ans_type)
     
     selected_ques = selected_words
@@ -206,7 +163,7 @@ def generate_words(a = ""):
         selected_ques = [jaconv.hira2kata(word) for word in selected_words]
     
     for i in range(question_amount):
-        question[i].config(text=f"{selected_ques[i]}")#, ("question"))
+        question[i].config(text=f"{selected_ques[i]}")
         answer[i].config(text=f"{ans[i]}")
         answer[i].grid_forget()
 
@@ -217,14 +174,6 @@ def generate_words(a = ""):
             else:
                 resize = min(25, 5 * (word_length - 4))
                 question[i].config(font=("Noto Sans CJK", 45 - resize))
-            # elif (word_length == 5):
-            #     question[i].config(font=("Noto Sans CJK", 40))
-            # elif (word_length == 6):
-            #     question[i].config(font=("Noto Sans CJK", 30))
-            # elif (word_length == 7):
-            #     question[i].config(font=("Noto Sans CJK", 25))
-            # elif (word_length > 7):
-            #     question[i].config(font=("Noto Sans CJK", 20))
         else:
             if (word_length > 6):
                 question[i].config(font=("Noto Sans CJK", 35))
@@ -233,19 +182,6 @@ def generate_words(a = ""):
         
 def show_answer(question_index):
     # Can you grid_forget() to remove completely, but need to reapply grid()
-    # this_question = question[question_index]
-    
-    # this_text = this_question.cget("text")
-    # key = answer[question_index]
-
-    # if (type == 0):
-    #     converted = this_text
-
-    # key.config(text=converted)
-    # this_question.unbind("<Button-1>")
-    # this_question.unbind(f"<Key-{question_index + 1}>")
-    # answer.grid_
-    
     answer[question_index].grid(row=int(question_index / 3) + 3, column=question_index % 3, pady=(30, 0)) 
 
     
@@ -254,12 +190,8 @@ def show_all(a):
         answer[i].grid(row=int(i / 3) + 3, column=i % 3, pady=(30, 0)) 
 
 def change_type(a, b, c):
-    #print(a, b, c) -> PY_VAR1 write
-    
     global type
-    # print(option_select)
     type = option_select.index(var_select.get())
-    # print(type)
  
 def change_mode(a):
     # print(a) -> <KeyPress event send_event=True state=Control keysym=d keycode=68 char='\x04' x=500 y=77>
@@ -269,39 +201,18 @@ def change_mode(a):
     else:
         ans_type = 0
 
-    tipe = ans_type + type
-
-    # if (tipe == 1 or tipe == 12):
-    #     fcn = "jaconv."
-    # elif (tipe < 10):
-    #     fcn = "jaconv.kana2alphabet"
-    # else:
-    #     fcn = "jaconv.kata"
-    # # jaconv.
-
-    # print(ans_type)
-    # print(type+ans_type)
     local_selected = selected_words
     ans = get_answer(local_selected, type + ans_type)
     for i in range(question_amount):
-        # eval(answer[i].cget("text"))
-        # answer[i].config(text=f"{[i]}") v copied.
-        # print("Hi")
-        # print(ans[i])
         answer[i].config(text=f"{ans[i]}")
 
 def get_answer(selected_words, ans_type):
     # 0,1,2 -> Romaji, Hira, Kata
-    # print(ans_type)
-    # print(selected_words[0])
     if (ans_type == 1 or ans_type == 12):
-        # print("1")
         return [jaconv.kana2alphabet(word) for word in selected_words]
     elif (ans_type < 10):
-        # print("2")
         return selected_words
 
-    # print("3")
     return [jaconv.hira2kata(word) for word in selected_words]
 
 
@@ -318,8 +229,6 @@ root.canvas = "F"
 
 # Set the window size (width x height)
 question_size = 300
-# window_width = question_size * 3 +whiteboard_width
-# window_height = whiteboard_height + wb_free_height
 window_width = question_size * 3
 window_height = whiteboard_height + wb_free_height
 
@@ -357,7 +266,7 @@ label.grid(row = 0, columnspan = amount_col)
 button = tk.Button(root, text="Generate", command=generate_words, 
                    font=("Arial", 14),
                    width=20)
-button.grid(row = 1, columnspan = amount_col, rowspan=2, pady=(0, 0))#, ipady=10)#, sticky="s")
+button.grid(row = 1, columnspan = amount_col, rowspan=2, pady=(0, 0))
 
 
 # Dropdowns variable
@@ -392,8 +301,7 @@ dropdown_ans = tk.OptionMenu(root, var_ans, *option_katakana)
 question = []
 answer = []
 for i in range(question_amount):
-    question_label = tk.Label(root, font=("Noto Sans CJK", 45)) #, bg="lightgray",
-                     #borderwidth=2, relief="solid")
+    question_label = tk.Label(root, font=("Noto Sans CJK", 45))
     question_label.grid(row= int(i / 3) + 3, column=i % 3, pady= (0, 60), sticky="nesw") 
     question.append(question_label)
 
@@ -406,28 +314,27 @@ for i in range(question_amount):
     key_num = i + 1
     root.bind(f"<Key-{key_num}>", lambda event, index=i: show_answer(index))
 
-#question[len(question) - 1].grid(pady= (0,80))
 
-# root.bind('<FocusOut>', close_window)
-root.bind('<Control-d>', change_mode)
-root.bind('<Control-a>', show_all)
-root.bind('<Control-g>', generate_words)
 label_dummy = tk.Label(root, text="")
-label_dummy.grid(row = 6, columnspan=amount_col)#, pady = (0, 800))
+label_dummy.grid(row = 6, columnspan=amount_col)
 
 for i in range(amount_col):
     root.grid_columnconfigure(i, weight = 1, minsize=question_size)
-# root.grid_columnconfigure(2, weight = 0)
+
 root.grid_rowconfigure(3, minsize=130)
 root.grid_rowconfigure(4, minsize=130)
 root.grid_rowconfigure(5, minsize=130)
 root.grid_rowconfigure(2, minsize=0)
-# root.grid_rowconfigure(5, weight = 1)
-#root.grid_rowconfigure(5, pady = (0, 50))
 
 whiteboard = Whiteboard(root, whiteboard_width, whiteboard_height + wb_free_height, wb_free_height)
 
+
+# root.bind('<FocusOut>', close_window)
 root.bind_all('<Control-c>', lambda event: toggle_canvas(root, window_width, window_height, whiteboard_width, whiteboard_height + wb_free_height))
+root.bind('<Control-d>', change_mode)
+root.bind('<Control-g>', generate_words)
+root.bind('<Control-a>', show_all)
+
 
 # Start the main event loop
 root.mainloop()
