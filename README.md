@@ -1,0 +1,1 @@
+"# kana_generator" 
